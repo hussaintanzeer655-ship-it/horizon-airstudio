@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Horizon Air Studio — Premium Urban Air Quality Editorial</title>
+  <meta name="description" content="A production-ready, editorial single-page site exploring urban air quality with studio-grade typography, motion, and data visualization." />
+  <style>
+    :root{
+      --bg: #0b0b10;
+      --fg: #e9e7f1;
+      --muted: #b2b0b9;
+      --brand: #6bd1ff;
+      --card: #14161d;
+      --surface: #1e1f28;
+      --gradient: linear-gradient(135deg, rgba(107,209,255,0.25) 0%, rgba(107,209,255,0) 60%);
+      --shadow: 0 10px 25px rgba(0,0,0,.25);
+    }
+    html, body { height: 100%; }
+    * { box-sizing: border-box; }
+    html:focus-within { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Inter, Arial;
+      background: radial-gradient(1200px circle at 20% -10%, rgba(107,209,255,.15), transparent 40%),
+                  radial-gradient(900px circle at 90% 0%, rgba(125, 86, 255,.12), transparent 40%),
+                  var(--bg);
+      color: var(--fg);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    header.site-header {
+      position: sticky; top:0; z-index: 50;
+      backdrop-filter: saturate(1.2) blur(6px);
+      background: rgba(10,10,15,.75);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .container { width: min(1100px, 92vw); margin: 0 auto; padding: 0 0.5rem; }
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .brand {
+      display: inline-flex; align-items: center; gap: .6rem;
+      text-decoration: none; color: var(--fg); font-weight: 700;
+    }
+    .brand .logo {
+      width: 28px; height: 28px; display: inline-block; border-radius: 7px;
+      background: conic-gradient(from 180deg at 50% 50%, #6bd1ff, #8a7dff, #6bd1ff);
+      box-shadow: inset 0 0 8px rgba(255,255,255,.3);
+    }
+    nav ul { list-style: none; display: flex; padding: 0; margin: 0; gap: 1rem; }
+    nav a {
+      color: var(--fg); text-decoration: none;
+      padding: .5rem .75rem; border-radius: 6px;
+      transition: transform .2s ease, background .2s ease;
+    }
+    nav a:hover, nav a:focus { background: rgba(255,255,255,.08); outline: none; transform: translateY(-1px); }
+    .cta {
+      padding: .6rem 1rem; border-radius: 6px; border: 1px solid rgba(107,209,255,.6);
+      color: #00131a; background: linear-gradient(#a8e6ff, #6bd1ff);
+      text-decoration: none; font-weight: 700;
+    }
+    main { padding: 64px 0; }
+    .hero {
+      display: grid; grid-template-columns: 1.05fr .95fr; gap: 40px; align-items: center;
+    }
+    .hero-copy h1 {
+      font-size: clamp(28px, 4vw, 48px);
+      line-height: 1.12; margin: 0 0 .6rem;
+    }
+    .eyebrow { font-size: .9rem; text-transform: uppercase; letter-spacing: .2em; color: var(--muted); margin-bottom: .6rem; }
+    .lead { color: #d9d6e3; max-width: 58ch; }
+    .hero-visual {
+      height: 360px; border-radius: 14px; background: #141720; padding: 18px; position: relative;
+      overflow: hidden; border: 1px solid rgba(255,255,255,.07);
+      box-shadow: var(--shadow);
+    }
+    .grid-lines { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+      background-size: 40px 40px; mix-blend-mode:overlay;
+    }
+    .aqi-canvas { width: 100%; height: 100%; display: block; }
+    section.panel { background: rgba(20,22,30,.6); border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px; padding: 20px; box-shadow: var(--shadow);
+    }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .card {
+      background: linear-gradient(#1e2030, #171a2a);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px;
+    }
+    .card h3 { margin: 0; font-size: 1rem; color: #e7e6f3; }
+    .stat { font-size: 1.6rem; font-weight: 700; letter-spacing: .02em; }
+    .hint { color: var(--muted); font-size: .9rem; }
+    .trend { display: inline-flex; align-items: center; gap: .25rem; font-variant-numeric: tabular-nums; color: #d7e7ff; }
+    .spark { width: 100%; height: 54px; display: block; }
+    footer { background: #0b0b10; border-top: 1px solid rgba(255,255,255,.08); padding: 28px 0; }
+    .footer-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 980px){
+      .hero { grid-template-columns: 1fr; padding-top: 12px; }
+      .grid { grid-template-columns: 1fr 1fr; }
+      .hero-visual { height: 280px; }
+      .footer-col { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px){
+      nav ul { display: none; }
+      .grid { grid-template-columns: 1fr; }
+      .hero-visual { height: 240px; }
+    }
+    /* keyboard focus visibility */
+    :focus-visible { outline: 2px solid #7ad2ff; outline-offset: 2px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <header class="site-header" aria-label="Main navigation">
+    <div class="container nav" role="navigation">
+      <a class="brand" href="#" aria-label="Horizon Air Studio home">
+        <span class="logo" aria-hidden="true"></span>
+        <span style="font-weight:700; letter-spacing:.02em;">Horizon</span>
+        <span style="color:var(--muted); margin-left:2px;">Air Studio</span>
+      </a>
+      <nav aria-label="Site pages">
+        <ul>
+          <li><a href="#overview">Overview</a></li>
+          <li><a href="#data">Data & Insights</a></li>
+          <li><a href="#methods">Methods</a></li>
+          <li><a href="#footer">Contact</a></li>
+        </ul>
+      </nav>
+      <a class="cta" href="#cta" aria-label="Primary action: engage with Horizon Air Studio">Request a briefing</a>
+    </div>
+  </header>
+
+  <main id="content" class="container" role="main">
+    <section class="hero" aria-label="Hero">
+      <div class="hero-copy">
+        <div class="eyebrow">Trend Insight • Air Quality</div>
+        <h1>Studio-grade visualization for urban air realities</h1>
+        <p class="lead">Presenting a premium, editorial experience that translates air quality metrics into actionable context. A focused single-page design built for decision-makers, city planners, and brand teams seeking clarity, credibility, and craft.</p>
+        <div style="display:flex; gap:12px; align-items:center; margin-top:8px;">
+          <span class="trend" aria-label="Trend indicator">AQI trends: up to date</span>
+          <span class="trend" aria-label="Trend indicator">PM2.5 spotlight</span>
+        </div>
+        <p class="hint" style="margin-top:6px;">No fluff. Data-informed narratives with editorial rigor, subtle motion, and tactile typography.</p>
+      </div>
+      <div class="hero-visual" aria-label="Live air quality visualization">
+        <div class="grid-lines" aria-hidden="true"></div>
+        <svg class="aqi-canvas" viewBox="0 0 600 360" role="img" aria-label="Live visualization of air quality index across time">
+          <!-- soft gradient backdrop -->
+          <defs>
+            <linearGradient id="gradAqi" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#6bd1ff" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#4b6bd1" stop-opacity="0.9"/>
+            </linearGradient>
+          </defs>
+          <rect x="0" y="0" width="600" height="360" fill="url(#gradAqi)" opacity="0.08"/>
+          <!-- subtle horizon line -->
+          <line x1="0" y1="270" x2="600" y2="270" stroke="#ffffff" stroke-opacity="0.25" stroke-width="1"/>
+          <!-- sample sparkline -->
+          <polyline fill="none" stroke="#8ad0ff" stroke-width="3" points="10,240 60,210 110,190 160,170 210,150 260,140 310,130 360,125 410,128 460,135 510,150 560,170 590,190"/>
+          <!-- decorative bubbles -->
+          <circle cx="90" cy="60" r="6" fill="#6bd1ff" fill-opacity="0.6"/>
+          <circle cx="520" cy="90" r="4" fill="#9ad1ff" fill-opacity="0.9"/>
+        </svg>
+      </div>
+    </section>
+
+    <section id="overview" class="panel" aria-label="Overview of the production-ready concept" style="margin-top:40px;">
+      <div class="grid" style="grid-template-columns: 1.2fr .8fr;">
+        <div class="card" style="min-height:120px;">
+          <h3>Concept: Editorial data suite</h3>
+          <div class="stat" aria-live="polite" style="font-size:1.4rem; margin-top:4px;">Studio-caliber narrative for urban air realities</div>
+          <p class="hint" style="margin:0;">A refined landing that positions air quality as a cultural and policy conversation, not just numbers.</p>
+        </div>
+        <div class="card" aria-label="Key audience">
+          <h3>Audience</h3>
+          <div class="stat" style="font-size:1.4rem; margin-top:4px;">City decision-makers, brands, editors</div>
+          <p class="hint" style="margin:0;">They demand credibility, visual clarity, and user-centric storytelling.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="data" class="panel" aria-label="Data blocks and insights" style="margin-top:28px;">
+      <div class="grid" style="gap:20px;">
+        <div class="card" role="article" aria-label="AQI current">
+          <h3>Current Air Quality Index</h3>
+          <div class="stat" style="color:#eaf6ff;">78</div>
+          <p class="hint" style="margin:0;">Moderate air quality with rising particulates in the afternoon window.</p>
+        </div>
+        <div class="card" role="article" aria-label="PM2.5 and PM10">
+          <h3>PM2.5 & PM10 Signals</h3>
+          <div class="stat" style="color:#d6ffd6;">12 μg/m³ • 28 μg/m³</div>
+          <p class="hint" style="margin:0;">Tends toward elevated morning concentrations in urban cores.</p>
+        </div>
+        <div class="card" role="article" aria-label="Ozone and humidity">
+          <h3>Ozone + Humidity</h3>
+          <div class="stat" style="color:#ffd9a8;">+18 ppb | 63%</div>
+          <p class="hint" style="margin:0;">Correlation with heatwaves; planning guidance recommended.</p>
+        </div>
+        <div class="card" role="article" aria-label="Data sources and cadence">
+          <h3>Cadence &amp; Sources</h3>
+          <div class="stat" style="font-family: ui-monospace, SFMono-Regular, Consolas; color:#e8eaf6;">SensorNet • Satellite • Wind models</div>
+          <p class="hint" style="margin:0;">Processed with transparent methodology for editorial trust.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="methods" class="panel" aria-label="Methods and editorial approach" style="margin-top:28px;">
+      <div class="grid" style="grid-template-columns: 1fr 1fr;">
+        <div class="card" aria-label="Editorial approach">
+          <h3>Editorial Approach</h3>
+          <p class="hint" style="margin:0;">We blend rigorous data storytelling with a tactile, restrained aesthetic. Every chart is labeled, every claim is sourced, every interaction designed for keyboard accessibility.</p>
+        </div>
+        <div class="card" aria-label="Interactivity">
+          <h3>Micro-interactions</h3>
+          <p class="hint" style="margin:0;">Hover reveals data provenance; focus states emphasize navigation and detail panels.</p>
+        </div>
+      </div>
+      <div class="grid" style="grid-template-columns: 1fr 1fr; margin-top:16px;">
+        <div class="card" aria-label="Accessibility">
+          <h3>Accessibility</h3>
+          <p class="hint" style="margin:0;">Color contrast and semantic headings ensure clarity for all readers.</p>
+        </div>
+        <div class="card" aria-label="Performance">
+          <h3>Performance</h3>
+          <p class="hint" style="margin:0;">Self-contained CSS and SVG visuals with no dependencies for fast GitHub Pages hosting.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="cta" class="panel" aria-label="Call to action" style="margin:40px 0 20px;">
+      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between;">
+        <div>
+          <div class="eyebrow" style="margin-bottom:.25rem;">Ready-to-deploy</div>
+          <h2 style="margin:0 0 .25rem; font-size: clamp(20px, 4vw, 28px);">Production-ready single-page site</h2>
+          <p class="hint" style="margin:0; max-width:55ch;">
+            Download-ready HTML, CSS, and vanilla JS. Transparent, accessible, and ready for a production host—no external tools required.
+          </p>
+        </div>
+        <a class="cta" href="#" aria-label="Primary action: contact Horizon Air Studio">Start a briefing</a>
+      </div>
+    </section>
+  </main>
+
+  <footer id="footer" aria-label="Site footer">
+    <div class="container footer-col" style="gap:28px;">
+      <div>
+        <strong>Horizon Air Studio</strong>
+        <p class="hint" style="margin:6px 0 0; max-width:70ch;">
+          A premium editorial interface for understanding urban air realities—designed for impact, engineered for reliability.
+        </p>
+      </div>
+      <div>
+        <strong>Contact</strong>
+        <p class="hint" style="margin:6px 0 0;">
+          hello@horizonairstudio.example • +1 (555) 010-2026
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Lightweight: smooth navigation for internal anchors
+    (function(){
+      const links = document.querySelectorAll('a[href^="#"]');
+      for(const a of links){
+        a.addEventListener('click', e => {
+          const href = a.getAttribute('href');
+          if(href.length>1){
+            const el = document.querySelector(href);
+            if(el){
+              e.preventDefault();
+              el.scrollIntoView({behavior:'smooth', block:'start'});
+              history.pushState(null, '', href);
+            }
+          }
+        });
+      }
+    })();
+
+    // Tiny responsive height adjustment for hero visual on resize
+    (function(){
+      const viz = document.querySelector('.hero-visual');
+      function adjust(){
+        if(window.innerWidth < 700){
+          viz.style.height = '240px';
+        } else {
+          viz.style.height = '360px';
+        }
+      }
+      window.addEventListener('resize', adjust, {passive:true});
+      adjust();
+    })();
+  </script>
+</body>
+</html>
